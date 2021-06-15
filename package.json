@@ -1,0 +1,23 @@
+{
+  "name": "mern-ecom-api",
+  "version": "1.0.0",
+  "description": "A MERN based ecommerce website API's",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "In5pire Arc",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.12.0",
+    "lodash": "^4.17.21",
+    "mongoose": "^5.12.13",
+    "mongoose-unique-validator": "^2.0.3",
+    "multer": "^1.4.2",
+    "nodemon": "^2.0.7",
+    "uuid": "^8.3.2"
+  }
+}
