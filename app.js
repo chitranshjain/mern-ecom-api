@@ -1,6 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 
+// Local imports
+const userRoutes = require("./routes/users");
+
 const app = express();
 
 app.use(bodyParser.json());
@@ -16,9 +19,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/", (req, res) => {
-  res.send("Hello, welcome to your server");
-});
+app.use("/api/users", userRoutes);
 
 app.listen(5000, () => {
   console.log("Server is up and running on port 5000");
