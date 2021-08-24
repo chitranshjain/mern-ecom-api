@@ -36,6 +36,10 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  firebaseId: {
+    type: String,
+    required: true,
+  },
   orders: [
     {
       type: mongoose.Types.ObjectId,

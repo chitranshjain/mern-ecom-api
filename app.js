@@ -13,7 +13,7 @@ const HttpError = require("./models/error");
 
 // Initializing express app and other features
 const app = express();
-dotenv.config();
+dotenv.config(); 
 
 // Middlewares
 app.use(bodyParser.json());
