@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const categorySchema = new Schema({
   name: {
     type: String,
-    required: true.valueOf,
+    required: true,
   },
   products: [
     {
@@ -16,4 +16,4 @@ const categorySchema = new Schema({
   ],
 });
 
-module.exports = mongoose.model("Category");
+module.exports = mongoose.model("Category", categorySchema);

@@ -9,11 +9,12 @@ const dotenv = require("dotenv");
 // Local imports
 const userRoutes = require("./routes/users");
 const productRoutes = require("./routes/products");
+const categoryRoutes = require("./routes/categories");
 const HttpError = require("./models/error");
 
 // Initializing express app and other features
 const app = express();
-dotenv.config(); 
+dotenv.config();
 
 // Middlewares
 app.use(bodyParser.json());
@@ -31,6 +32,7 @@ app.use((req, res, next) => {
 
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/categories", categoryRoutes);
 
 // Invalid route error
 app.use((req, res, next) => {
