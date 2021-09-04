@@ -19,6 +19,7 @@ dotenv.config();
 
 // Middlewares
 app.use(bodyParser.json());
+app.use("/uploads/images/", express.static(path.join("uploads", "images")));
 
 // CORS Rules Modification
 app.use((req, res, next) => {

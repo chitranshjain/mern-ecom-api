@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const fs = require("fs");
 const HttpError = require("../models/error");
 
 // Local Imports
@@ -7,6 +8,7 @@ const Category = require("../models/categories");
 
 const createProduct = async (req, res, next) => {
   const { name, price, stockQuantity, categoryName, description } = req.body;
+  console.log(req.body);
 
   let category;
   try {
@@ -26,8 +28,7 @@ const createProduct = async (req, res, next) => {
 
   const newProduct = new Product({
     name: name,
-    image:
-      "https://rukminim1.flixcart.com/image/416/416/kg8avm80/mobile/r/h/z/apple-iphone-12-dummyapplefsn-original-imafwg8dqgncgbcb.jpeg?q=70",
+    image: req.file.path,
     price,
     stockQuantity,
     description,
@@ -65,8 +66,6 @@ const updateProduct = async (req, res, next) => {
     product = await Product.findByIdAndUpdate(productId, {
       $set: {
         name: name,
-        image:
-          "https://rukminim1.flixcart.com/image/416/416/kg8avm80/mobile/r/h/z/apple-iphone-12-dummyapplefsn-original-imafwg8dqgncgbcb.jpeg?q=70",
         category,
         price,
         stockQuantity,
@@ -83,6 +82,36 @@ const updateProduct = async (req, res, next) => {
     .json({ message: "Product updated successfully", updatedProduct: product });
 };
 
+const updateProductImage = async (req, res, next) => {
+  const productId = req.params.productId;
+  let product;
+  try {
+    product = await Product.findByIdAndUpdate(productId, {
+      $set: {
+        image: req.file.path,
+      },
+    });
+  } catch (error) {
+    const err = new HttpError("Could not update product image", 500);
+    return next(err);
+  }
+
+  const oldImagePath = product.image;
+
+  fs.unlink(oldImagePath, (err) => {
+    if (err) {
+      console.log("Error while deleting image");
+    } else {
+      console.log("Place image deleted");
+    }
+  });
+
+  res.status(200).json({
+    message: "Product image updated successfully",
+    updatedProduct: product,
+  });
+};
+
 const deleteProduct = async (req, res, next) => {
   const productId = req.params.productId;
   let product;
@@ -94,6 +123,7 @@ const deleteProduct = async (req, res, next) => {
     return next(err);
   }
 
+  const oldImagePath = product.image;
   try {
     const session = await mongoose.startSession();
     session.startTransaction();
@@ -109,6 +139,14 @@ const deleteProduct = async (req, res, next) => {
     return next(error);
   }
 
+  fs.unlink(oldImagePath, (err) => {
+    if (err) {
+      console.log("Error while deleting image");
+    } else {
+      console.log("Place image deleted");
+    }
+  });
+
   res.status(200).json({ message: "Product deleted successfully!" });
 };
 
@@ -122,6 +160,8 @@ const getProductById = async (req, res, next) => {
     return next(err);
   }
 
+  product.image = product.image.replace(/\\/g, "/");
+
   res.status(200).json({ product: product.toObject({ getters: true }) });
 };
 
@@ -133,6 +173,10 @@ const getAllProducts = async (req, res, next) => {
     const err = new HttpError("Could not find products", 404);
     return next(err);
   }
+
+  products.forEach((prod) => {
+    prod.image = prod.image.replace(/\\/g, "/");
+  });
 
   res.status(200).json({
     products: products.map((prod) => prod.toObject({ getters: true })),
@@ -151,6 +195,10 @@ const getProductsByCategory = async (req, res, next) => {
     return next(err);
   }
 
+  products.forEach((prod) => {
+    prod.image = prod.image.replace(/\\/g, "/");
+  });
+
   res.status(200).json({
     products: products.map((prod) => prod.toObject({ getters: true })),
   });
@@ -163,4 +211,5 @@ module.exports = {
   getProductById,
   getAllProducts,
   getProductsByCategory,
+  updateProductImage,
 };

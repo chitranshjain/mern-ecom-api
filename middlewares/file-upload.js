@@ -1,8 +1,3 @@
-const express = require("express");
-
-const categoryController = require("../controllers/categories");
-
-const router = express.Router();
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
 
@@ -16,7 +11,7 @@ const fileUpload = multer({
   limits: 5000000,
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, "uploads/images/category");
+      cb(null, "uploads/images/product");
     },
     filename: (req, file, cb) => {
       const ext = MIME_TYPE_MAP[file.mimetype];
@@ -30,14 +25,4 @@ const fileUpload = multer({
   },
 });
 
-router.get("/", categoryController.getAllCategories);
-router.post("/", fileUpload.single("image"), categoryController.createCategory);
-router.patch("/:categoryId", categoryController.updateCategory);
-router.patch(
-  "/image/:categoryId",
-  fileUpload.single("image"),
-  categoryController.updateCategoryImage
-);
-router.delete("/:categoryId", categoryController.deleteCategory);
-
-module.exports = router;
+module.exports = fileUpload;
