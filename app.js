@@ -32,6 +32,9 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use("/", (req, res, next) => {
+  res.send("Hello");
+});
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
