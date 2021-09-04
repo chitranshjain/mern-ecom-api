@@ -85,11 +85,28 @@ const updateProduct = async (req, res, next) => {
 
 const deleteProduct = async (req, res, next) => {
   const productId = req.params.productId;
+  let product;
+
   try {
-    await Product.findByIdAndRemove(productId);
+    product = await Product.findById(productId).populate("category");
   } catch (error) {
-    const err = new HttpError("Could not delete product", 500);
+    const err = new HttpError("There was an error finding the product.", 404);
     return next(err);
+  }
+
+  try {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    await product.remove({ session: session });
+    product.category.products.pull(product);
+    await product.category.save({ session: session });
+    await session.commitTransaction();
+  } catch (err) {
+    const error = new HttpError(
+      "There was an error removing the product. Error : " + err.message,
+      500
+    );
+    return next(error);
   }
 
   res.status(200).json({ message: "Product deleted successfully!" });

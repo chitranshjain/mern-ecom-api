@@ -10,6 +10,7 @@ const dotenv = require("dotenv");
 const userRoutes = require("./routes/users");
 const productRoutes = require("./routes/products");
 const categoryRoutes = require("./routes/categories");
+const orderRoutes = require("./routes/orders");
 const HttpError = require("./models/error");
 
 // Initializing express app and other features
@@ -33,6 +34,7 @@ app.use((req, res, next) => {
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
+app.use("/api/orders", orderRoutes);
 
 // Invalid route error
 app.use((req, res, next) => {
