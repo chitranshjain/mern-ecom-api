@@ -85,7 +85,7 @@ const updateCategory = async (req, res, next) => {
   try {
     category = await Category.findByIdAndUpdate(categoryId, {
       $set: {
-        name,
+        name: name,
       },
     });
   } catch (error) {
