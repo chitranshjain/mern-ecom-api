@@ -31,6 +31,7 @@ const fileUpload = multer({
 });
 
 router.get("/", categoryController.getAllCategories);
+router.get("/:categoryId", categoryController.getCategoryById);
 router.post("/", fileUpload.single("image"), categoryController.createCategory);
 router.patch("/:categoryId", categoryController.updateCategory);
 router.patch(

@@ -56,6 +56,27 @@ const getAllCategories = async (req, res, next) => {
   });
 };
 
+const getCategoryById = async (req, res, next) => {
+  let category;
+  const categoryId = req.params.categoryId;
+
+  try {
+    category = await Category.findById(categoryId).populate("products");
+  } catch (error) {
+    const err = new HttpError(
+      "Could not find category with the provided category ID",
+      404
+    );
+    return next(err);
+  }
+
+  category.image = category.image.replace(/\\/g, "/");
+
+  res.status(200).json({
+    category: category,
+  });
+};
+
 const updateCategory = async (req, res, next) => {
   const { name } = req.body;
   const categoryId = req.params.categoryId;
@@ -148,4 +169,5 @@ module.exports = {
   updateCategory,
   deleteCategory,
   updateCategoryImage,
+  getCategoryById,
 };
