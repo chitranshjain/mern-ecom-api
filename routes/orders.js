@@ -5,6 +5,7 @@ const ordersController = require("../controllers/orders");
 const router = express.Router();
 
 router.get("/", ordersController.getAllOrders);
+router.get("/order/:orderId", ordersController.getOrderById);
 router.get("/:userId", ordersController.getOrdersByUserId);
 router.post(
   "/",

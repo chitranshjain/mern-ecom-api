@@ -133,6 +133,27 @@ const getAllOrders = async (req, res, next) => {
   });
 };
 
+const getOrderById = async (req, res, next) => {
+  let order;
+  const orderId = req.params.orderId;
+
+  try {
+    order = await Order.findById(orderId)
+      .populate("userId")
+      .populate("products.productId");
+  } catch (error) {
+    const err = new HttpError(
+      "Could not fetch order. Error : " + error.message,
+      404
+    );
+    return next(err);
+  }
+
+  res.status(200).json({
+    order: order.toObject({ getters: true }),
+  });
+};
+
 const deleteOrderById = async (req, res, next) => {
   const orderId = req.params.orderId;
   let order;
@@ -218,4 +239,5 @@ module.exports = {
   updateOrder,
   getOrdersByUserId,
   checkProducts,
+  getOrderById,
 };
