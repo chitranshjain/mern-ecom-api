@@ -8,7 +8,7 @@ const getAllUsers = async (req, res, next) => {
   let users;
 
   try {
-    users = await User.find();
+    users = await User.find().populate("orders");
   } catch (error) {
     const err = new HttpError("Could not get all users", 404);
     return next(err);
@@ -24,7 +24,7 @@ const getUserById = async (req, res, next) => {
   const userId = req.params.userId;
 
   try {
-    user = await User.findById(userId);
+    user = await User.findById(userId).populate("orders");
   } catch (error) {
     const err = new HttpError(
       "Could not find user. Error : " + error.message,
