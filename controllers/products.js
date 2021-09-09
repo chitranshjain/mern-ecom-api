@@ -59,9 +59,18 @@ const createProduct = async (req, res, next) => {
 };
 
 const updateProduct = async (req, res, next) => {
-  const { name, category, price, stockQuantity, description } = req.body;
+  const { name, categoryName, price, stockQuantity, description } = req.body;
   const productId = req.params.productId;
   let product;
+
+  let category;
+  try {
+    category = await Category.findOne({ name: categoryName });
+  } catch (err) {
+    const error = new HttpError("Something went wrong.", 500);
+    return next(error);
+  }
+
   try {
     product = await Product.findByIdAndUpdate(productId, {
       $set: {
