@@ -63,6 +63,8 @@ const updateProduct = async (req, res, next) => {
   const productId = req.params.productId;
   let product;
 
+  console.log(categoryName);
+
   let category;
   try {
     category = await Category.findOne({ name: categoryName });
@@ -72,15 +74,43 @@ const updateProduct = async (req, res, next) => {
   }
 
   try {
-    product = await Product.findByIdAndUpdate(productId, {
-      $set: {
-        name: name,
-        category,
-        price,
-        stockQuantity,
-        description,
+    product = await Product.findById(productId);
+  } catch (error) {
+    const err = new HttpError("Could not update product", 500);
+    return next(err);
+  }
+
+  let oldCategoryId = product.category;
+
+  let oldCategory;
+  try {
+    oldCategory = await Category.findById(oldCategoryId);
+  } catch (err) {
+    const error = new HttpError("Something went wrong.", 500);
+    return next(error);
+  }
+
+  try {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    oldCategory.products.pull(product);
+    await Product.findByIdAndUpdate(
+      productId,
+      {
+        $set: {
+          name: name,
+          category,
+          price,
+          stockQuantity,
+          description,
+        },
       },
-    });
+      { session: session }
+    );
+    category.products.push(product);
+    await oldCategory.save({ session: session });
+    await category.save({ session: session });
+    await session.commitTransaction();
   } catch (error) {
     const err = new HttpError("Could not update product", 500);
     return next(err);
