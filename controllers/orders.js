@@ -119,7 +119,8 @@ const getAllOrders = async (req, res, next) => {
   try {
     orders = await Order.find()
       .populate("userId")
-      .populate("products.productId");
+      .populate("products.productId")
+      .populate("products.productId.category");
   } catch (error) {
     const err = new HttpError(
       "Could not fetch orders. Error : " + error.message,
