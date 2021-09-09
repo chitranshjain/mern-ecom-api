@@ -63,8 +63,6 @@ const updateProduct = async (req, res, next) => {
   const productId = req.params.productId;
   let product;
 
-  console.log(categoryName);
-
   let category;
   try {
     category = await Category.findOne({ name: categoryName });
