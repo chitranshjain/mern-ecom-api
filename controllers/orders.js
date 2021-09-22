@@ -212,7 +212,7 @@ const getOrdersByUserId = async (req, res, next) => {
 
   let orders;
   try {
-    orders = await Order.find({ userId: userId });
+    orders = await Order.find({ userId: userId }).populate("products.productId");
   } catch (error) {
     const err = new HttpError(
       "Could not find orders for the provided User ID",
